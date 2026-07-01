@@ -10,26 +10,14 @@ class Dashboard extends BaseController
     {
         $menuModel = new MenuModel();
 
+        $stok = $menuModel->selectSum('stok')->first();
+
         $data = [
-            'title' => 'Dashboard',
-
-            // Total semua menu
-            'totalMenu' => $menuModel->countAll(),
-
-            // Total makanan
-            'totalMakanan' => (new MenuModel())
-                ->where('kategori', 'Makanan')
-                ->countAllResults(),
-
-            // Total minuman
-            'totalMinuman' => (new MenuModel())
-                ->where('kategori', 'Minuman')
-                ->countAllResults(),
-
-            // Total stok
-            'totalStok' => (new MenuModel())
-                ->selectSum('stok')
-                ->first()['stok']
+            'title'         => 'Dashboard',
+            'totalMenu'     => $menuModel->countAll(),
+            'totalMakanan'  => $menuModel->where('kategori', 'Makanan')->countAllResults(),
+            'totalMinuman'  => $menuModel->where('kategori', 'Minuman')->countAllResults(),
+            'totalStok'     => $stok['stok'] ?? 0
         ];
 
         return view('dashboard/index', $data);

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Controllers;
-
+use Dompdf\Dompdf;
 use App\Models\MenuModel;
 
 class Menu extends BaseController
@@ -103,8 +103,32 @@ public function store()
     }
 
     public function delete($id)
-    {
+{
+    if ($this->menu->find($id)) {
         $this->menu->delete($id);
-        return redirect()->to('/menu');
     }
+
+    return redirect()->to('/menu')
+        ->with('success', 'Menu berhasil dihapus.');
+}
+
+public function pdf()
+{
+    $data['menu'] = $this->menu->findAll();
+
+    $html = view('menu/pdf', $data);
+
+    $dompdf = new Dompdf();
+
+    $dompdf->loadHtml($html);
+
+    $dompdf->setPaper('A4', 'portrait');
+
+    $dompdf->render();
+
+    $dompdf->stream('Daftar_Menu_Burjo.pdf', [
+        'Attachment' => true
+    ]);
+}
+
 }

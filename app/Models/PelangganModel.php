@@ -4,24 +4,24 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class MenuModel extends Model
+class PelangganModel extends Model
 {
-    protected $table = 'menu';
+    protected $table = 'pelanggan';
+
     protected $primaryKey = 'id';
+
     protected $returnType = 'array';
-    protected $useAutoIncrement = true;
 
     protected $allowedFields = [
-        'nama_menu',
-        'kategori',
-        'harga',
-        'stok'
+        'nama',
+        'alamat',
+        'telepon'
     ];
+
+    protected $useSoftDeletes = true;
+    protected $deletedField = 'deleted_at';
 
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = 'updated_at';
-
-    protected $useSoftDeletes = true;
-    protected $deletedField = 'deleted_at';
 }

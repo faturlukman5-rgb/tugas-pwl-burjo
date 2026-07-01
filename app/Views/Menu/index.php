@@ -1,181 +1,206 @@
 ```php
 <?= $this->extend('layout/template') ?>
-
 <?= $this->section('content') ?>
 
-<div class="container-fluid mt-4">
+<style>
 
-    <!-- Statistik -->
+.hero-section{
+    background:linear-gradient(135deg,#1e3a8a,#2563eb);
+    color:white;
+    padding:35px;
+    border-radius:25px;
+    margin-bottom:30px;
+}
+
+.hero-section h2{
+    font-weight:700;
+}
+
+.stat-box{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+    height:100%;
+}
+
+.stat-box h3{
+    font-weight:700;
+    margin:0;
+}
+
+.stat-box p{
+    margin:0;
+    color:#64748b;
+}
+
+.menu-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+    transition:.3s;
+}
+
+.menu-card:hover{
+    transform:translateY(-5px);
+}
+
+.menu-price{
+    color:#2563eb;
+    font-weight:700;
+    font-size:20px;
+}
+
+.menu-stock{
+    font-size:14px;
+}
+
+.search-box{
+    background:white;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.06);
+    margin-bottom:25px;
+}
+
+.badge-food{
+    background:#dbeafe;
+    color:#1e40af;
+}
+
+.badge-drink{
+    background:#dcfce7;
+    color:#166534;
+}
+
+</style>
+
+<div class="container-fluid">
+
+   
+
+    <!-- STATISTIK -->
     <div class="row g-4 mb-4">
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Total Menu</h6>
-                    <h2 class="fw-bold text-primary"><?= $totalMenu ?></h2>
-                </div>
+            <div class="stat-box">
+                <h3><?= $totalMenu ?></h3>
+                <p>Total Menu</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Makanan</h6>
-                    <h2 class="fw-bold text-success"><?= $makanan ?></h2>
-                </div>
+            <div class="stat-box">
+                <h3><?= $makanan ?></h3>
+                <p>Makanan</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Minuman</h6>
-                    <h2 class="fw-bold text-info"><?= $minuman ?></h2>
-                </div>
+            <div class="stat-box">
+                <h3><?= $minuman ?></h3>
+                <p>Minuman</p>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <h6 class="text-muted">Total Stok</h6>
-                    <h2 class="fw-bold text-warning"><?= $totalStok ?></h2>
-                </div>
+            <div class="stat-box">
+                <h3><?= $totalStok ?></h3>
+                <p>Total Stok</p>
             </div>
         </div>
 
     </div>
 
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="fw-bold text-dark">Daftar Menu Burjo</h2>
-    </div>
+   
 
-    <!-- Search -->
-    <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body">
+    <!-- CARD MENU -->
+    <div class="row g-4">
 
-            <form method="get" action="<?= base_url('menu') ?>">
-                <div class="row g-2">
+        <?php if(empty($menu)): ?>
 
-                    <div class="col-md-6">
-                        <input
-                            type="text"
-                            name="keyword"
-                            class="form-control"
-                            placeholder="Cari nama menu atau kategori..."
-                            value="<?= $keyword ?? '' ?>">
+           
+
+        <?php else: ?>
+
+            <?php foreach($menu as $m): ?>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="card menu-card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+
+                            <h5 class="fw-bold">
+                                <?= $m['nama_menu'] ?>
+                            </h5>
+
+                            <?php if($m['kategori']=='Makanan'): ?>
+                                <span class="badge badge-food">
+                                    Makanan
+                                </span>
+                            <?php else: ?>
+                                <span class="badge badge-drink">
+                                    Minuman
+                                </span>
+                            <?php endif; ?>
+
+                        </div>
+
+                        <div class="menu-price mt-3">
+                            Rp <?= number_format($m['harga'],0,',','.') ?>
+                        </div>
+
+                        <div class="menu-stock mt-2">
+                            Stok tersedia :
+                            <strong><?= $m['stok'] ?></strong>
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex gap-2">
+
+                            <a href="<?= base_url('menu/edit/'.$m['id']) ?>"
+                               class="btn btn-warning flex-fill">
+                                <i class="bi bi-pencil"></i>
+                                Edit
+                            </a>
+
+                            <a href="<?= base_url('menu/delete/'.$m['id']) ?>"
+                               onclick="return confirm('Yakin ingin menghapus menu ini?')"
+                               class="btn btn-danger flex-fill">
+                                <i class="bi bi-trash"></i>
+                                Hapus
+                            </a>
+
+                          <a href="/cart/add/<?= $m['id']; ?>" class="btn btn-primary btn-sm mt-2">
+  
+    Tambah ke Keranjang
+</a>
+
+<a href="<?= base_url('menu/pdf') ?>"
+class="btn btn-danger">
+
+<i class="bi bi-file-earmark-pdf-fill"></i>
+
+Cetak PDF
+
+</a>
+                        </div>
+
                     </div>
 
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary">
-                            Cari
-                        </button>
-
-                        <a href="<?= base_url('menu') ?>" class="btn btn-secondary">
-                            Reset
-                        </a>
-                    </div>
-
                 </div>
-            </form>
-
-        </div>
-    </div>
-
-    <!-- Tabel -->
-    <div class="card border-0 shadow-sm">
-
-        <div class="card-body">
-
-            <div class="table-responsive">
-
-                <table class="table table-hover align-middle">
-
-                    <thead class="table-primary">
-                        <tr>
-                            <th>No</th>
-                            <th></th>
-                            <th>Nama Menu</th>
-                            <th>Kategori</th>
-                            <th>Harga</th>
-                            <th>Stok</th>
-                            <th width="180">Aksi</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        <?php if (empty($menu)) : ?>
-
-                            <tr>
-                                <td colspan="7" class="text-center">
-                                    Data menu tidak ditemukan
-                                </td>
-                            </tr>
-
-                        <?php else : ?>
-
-                            <?php $no = 1; ?>
-
-                            <?php foreach ($menu as $m) : ?>
-
-                                <tr>
-
-                                    <td><?= $no++; ?></td>
-
-                                    <td>
-    
-                                    </td>
-
-                                    <td>
-                                        <strong><?= $m['nama_menu']; ?></strong>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-info">
-                                            <?= $m['kategori']; ?>
-                                        </span>
-                                    </td>
-
-                                    <td>
-                                        Rp <?= number_format($m['harga'], 0, ',', '.'); ?>
-                                    </td>
-
-                                    <td>
-                                        <span class="badge bg-success">
-                                            <?= $m['stok']; ?>
-                                        </span>
-                                    </td>
-
-                                    <td>
-
-                                        <a href="<?= base_url('menu/edit/' . $m['id']) ?>"
-                                           class="btn btn-outline-warning btn-sm">
-                                            Edit
-                                        </a>
-
-                                        <a href="<?= base_url('menu/delete/' . $m['id']) ?>"
-                                           class="btn btn-outline-danger btn-sm"
-                                           onclick="return confirm('Yakin ingin menghapus menu ini?')">
-                                            Hapus
-                                        </a>
-
-                                    </td>
-
-                                </tr>
-
-                            <?php endforeach; ?>
-
-                        <?php endif; ?>
-
-                    </tbody>
-
-                </table>
 
             </div>
 
-        </div>
+            <?php endforeach; ?>
+
+        <?php endif; ?>
 
     </div>
 
@@ -183,3 +208,5 @@
 
 <?= $this->endSection() ?>
 ```
+
+</form>
