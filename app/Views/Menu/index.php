@@ -208,5 +208,3 @@ Cetak PDF
 
 <?= $this->endSection() ?>
 ```
-
-</form>

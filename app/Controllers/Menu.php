@@ -126,9 +126,11 @@ public function pdf()
 
     $dompdf->render();
 
-    $dompdf->stream('Daftar_Menu_Burjo.pdf', [
-        'Attachment' => true
-    ]);
+  $dompdf->render();
+
+header('Content-Type: application/pdf');
+echo $dompdf->output();
+exit;
 }
 
 }
